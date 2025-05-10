@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueries } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { Order, OrderItem, Product } from "@shared/schema";
 import { Button } from "@/components/ui/button";
@@ -43,11 +43,11 @@ export default function UserDashboard() {
   });
 
   // Fetch order details including items for each order
-  const orderDetailsQueries = orders?.map((order) =>
-    useQuery({
+  const orderDetailsQueries = useQueries(
+    orders?.map((order) => ({
       queryKey: [`/api/orders/${order.id}`],
       enabled: !!user && !!orders,
-    })
+    })) || []
   );
 
   const isLoading = isAuthLoading || isOrdersLoading || isProductsLoading;
